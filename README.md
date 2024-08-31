@@ -72,3 +72,7 @@ The `App` component is the main component of the application. It manages the sta
 
 - `TransactionGrop`: For managing and displaying grouped transactions.
 - `TransactionCreation`: For creating or editing transactions.
+
+#### TalwindToHex.js
+
+This code defines two functions: `talwindToHex` and `getRandomColor`. The `talwindToHex` function takes a Tailwind CSS class name as input and returns the corresponding hexadecimal color value. The `getRandomColor` function generates a random Tailwind CSS class name with a background color and shade, ensuring that the generated class name corresponds to a valid color.
