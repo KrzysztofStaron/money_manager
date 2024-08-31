@@ -2,7 +2,12 @@ import React, { MouseEventHandler, useEffect, useMemo, useState } from "react";
 import { Doughnut } from "react-chartjs-2";
 import { Chart, ArcElement, Tooltip, Legend } from "chart.js";
 import { useCashe } from "../hooks/useCashe";
-import { Category, DataManager, Transaction, TransactionManager } from "../interfaces";
+import {
+  Category,
+  DataManager,
+  Transaction,
+  TransactionManager,
+} from "../interfaces";
 import { AiFillAlert, AiOutlinePlus } from "react-icons/ai";
 import TransactionCreation, { TransactionEdit } from "./TransactionCreation";
 import { getRandomColor, talwindToHex } from "../talwindToHex";
@@ -68,22 +73,19 @@ var defCategories: { [key: string]: Category[] } = {
   ],
 };
 
-
 const TransactionGrop = ({
   mode,
   recalc,
-  tm,
 }: {
   mode: "expenses" | "income";
   recalc: () => void;
-  tm: TransactionManager;
 }) => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [categories, setCategories] = useState(defCategories[mode]);
 
   const getCategory = (name: string) => {
     return categories?.find((el) => el.name === name);
-  }
+  };
 
   const [isLoading, setIsLoading] = useState(true);
   const [creation, setCreation] = useState(false);
@@ -94,7 +96,8 @@ const TransactionGrop = ({
       JSON.parse(DataManager.getItem(`transactions_${mode}`)) || []
     );
     setCategories(
-      JSON.parse(DataManager.getItem(`categories_${mode}`)) || defCategories[mode]
+      JSON.parse(DataManager.getItem(`categories_${mode}`)) ||
+        defCategories[mode]
     );
     setIsLoading(false);
   }, []);
@@ -102,7 +105,7 @@ const TransactionGrop = ({
   useEffect(() => {
     if (isLoading) return;
     DataManager.setItem(`transactions_${mode}`, JSON.stringify(transactions));
-    console.log("save")
+    console.log("save");
 
     recalc();
   }, [transactions]);
@@ -110,27 +113,29 @@ const TransactionGrop = ({
   useEffect(() => {
     if (isLoading) return;
     DataManager.setItem(`categories_${mode}`, JSON.stringify(categories));
-    console.log("save")
-
+    console.log("save");
   }, [categories]);
 
   const labels = Array.from(
-    new Set(transactions?.map((transaction) => categories[transaction.category].name))
+    new Set(
+      transactions?.map((transaction) => categories[transaction.category].name)
+    )
   );
-  
+
   let values: number[] | any = [];
   labels?.forEach((label) => {
     values.push(
       transactions
         ?.filter(
-          (transaction: Transaction) => categories[transaction.category].name === label
+          (transaction: Transaction) =>
+            categories[transaction.category].name === label
         )
         .reduce((acc: number, curr: Transaction) => acc + curr.amount, 0)
     );
   });
 
-  var dataColors : string[] = labels?.map((label) => {
-    return talwindToHex(getCategory(label)?.color)
+  var dataColors: string[] = labels?.map((label) => {
+    return talwindToHex(getCategory(label)?.color);
   });
 
   const data = {
@@ -169,9 +174,9 @@ const TransactionGrop = ({
   };
 
   const editCategory = (cat: Category, id: number) => {
-    console.log(id)
+    console.log(id);
     console.log(cat);
-    console.log(categories[id])
+    console.log(categories[id]);
 
     setCategories((prev) => {
       return prev.map((el, index) => {
@@ -181,18 +186,25 @@ const TransactionGrop = ({
         return el;
       });
     });
-  }
+  };
 
   if (editing >= 0) {
     return (
-      <TransactionEdit 
+      <TransactionEdit
         editCategory={editCategory}
         cat={transactions[editing].category}
         addCategory={() => {
-          setCategories((prev) => 
-            [...prev, { name: "New Category", color: getRandomColor(), parent: mode, removed:false }]
-        )}}
-        returnTransaction={(tr : Transaction) => {
+          setCategories((prev) => [
+            ...prev,
+            {
+              name: "New Category",
+              color: getRandomColor(),
+              parent: mode,
+              removed: false,
+            },
+          ]);
+        }}
+        returnTransaction={(tr: Transaction) => {
           setTransactions((prev) => {
             return prev.map((el, i) => {
               if (i === editing) {
@@ -212,7 +224,7 @@ const TransactionGrop = ({
         }}
         categories={categories}
       />
-    )
+    );
   }
 
   if (creation) {
@@ -220,9 +232,16 @@ const TransactionGrop = ({
       <TransactionCreation
         editCategory={editCategory}
         addCategory={() => {
-          setCategories((prev) => 
-            [...prev, { name: "New Category", color: getRandomColor(), parent: mode, removed:false }]
-        )}}
+          setCategories((prev) => [
+            ...prev,
+            {
+              name: "New Category",
+              color: getRandomColor(),
+              parent: mode,
+              removed: false,
+            },
+          ]);
+        }}
         returnTransaction={(tr) => {
           setTransactions((prev) => [...prev, tr]);
           setCreation(false);
@@ -236,10 +255,7 @@ const TransactionGrop = ({
     <div>
       <div className="flex justify-center w-screen">
         <div className="w-5/7 ml-10">
-          {isLoading ? null : (
-            <Doughnut data={data} options={options} />
-          )}
-          
+          {isLoading ? null : <Doughnut data={data} options={options} />}
         </div>
         <button
           className="min-w-10 h-10 relative bg-lime-400 rounded-full flex items-center justify-center text-black self-end right-10"
@@ -252,11 +268,17 @@ const TransactionGrop = ({
       <div className="mt-4">
         {transactions && transactions.length > 0
           ? transactions.map((transaction, index) => (
-              <TransactionDisplay key={index} data={transaction} catData={{color: categories[transaction.category].color, name: categories[transaction.category].name}} onClick={
-                () => {
+              <TransactionDisplay
+                key={index}
+                data={transaction}
+                catData={{
+                  color: categories[transaction.category].color,
+                  name: categories[transaction.category].name,
+                }}
+                onClick={() => {
                   setEditing(index);
-                }
-              }/>
+                }}
+              />
             ))
           : null}
       </div>
@@ -264,11 +286,25 @@ const TransactionGrop = ({
   );
 };
 
-const TransactionDisplay = ({ data, onClick, catData }: { data: Transaction, onClick: MouseEventHandler<HTMLDivElement>, catData : any }) => {
+const TransactionDisplay = ({
+  data,
+  onClick,
+  catData,
+}: {
+  data: Transaction;
+  onClick: MouseEventHandler<HTMLDivElement>;
+  catData: any;
+}) => {
   return (
-    <div className="flex h-10 pl-2 border-b-2 border-gray-900 hover:bg-gray-900" onClick={onClick}>
+    <div
+      className="flex h-10 pl-2 border-b-2 border-gray-900 hover:bg-gray-900"
+      onClick={onClick}
+    >
       <div className="flex gap-3 items-center">
-        <div className={`w-6 h-6 rounded-full shadow-2x`} style={{backgroundColor: talwindToHex(catData.color)}}></div>
+        <div
+          className={`w-6 h-6 rounded-full shadow-2x`}
+          style={{ backgroundColor: talwindToHex(catData.color) }}
+        ></div>
         <div>{catData.name}</div>
 
         <div className="font-extralight">

@@ -21,13 +21,15 @@ const App = () => {
     recalc();
   }, []);
 
-  const tm = new TransactionManager(screen);
-
   return (
     <>
       <div className="w-screen h-screen flex flex-col gap-3">
         <div>
-          <div className={`w-full text-center font-light text-sm pt-2`}><span className={`${total < 0 && "text-red-400"}`}>{total.toFixed(2)}$</span></div>
+          <div className={`w-full text-center font-light text-sm pt-2`}>
+            <span className={`${total < 0 && "text-red-400"}`}>
+              {total.toFixed(2)}$
+            </span>
+          </div>
 
           <div className="flex items-center justify-around">
             <button
@@ -47,16 +49,13 @@ const App = () => {
               Income
             </button>
           </div>
-        </div> 
+        </div>
         <div className="w-screen grow">
-          {
-            screen === "expenses" ? (
-              <TransactionGrop mode="expenses" key={1} recalc={recalc} tm={tm}/>
-            ) : (
-              <TransactionGrop mode="income" key={2} recalc={recalc} tm={tm}/>
-            )
-          }
-
+          {screen === "expenses" ? (
+            <TransactionGrop mode="expenses" key={1} recalc={recalc} />
+          ) : (
+            <TransactionGrop mode="income" key={2} recalc={recalc} />
+          )}
         </div>
       </div>
     </>

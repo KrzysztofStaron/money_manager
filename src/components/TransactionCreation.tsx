@@ -30,7 +30,7 @@ const TransactionCreation = ({
   returnTransaction: (transaction: Transaction) => void;
   categories: Category[];
   addCategory: () => void;
-  editCategory: (cat: Category, id:number) => void;
+  editCategory: (cat: Category, id: number) => void;
 }) => {
   const [amount, setAmount] = useState<string>("");
   const [category, setCategory] = useState<number>(0);
@@ -104,7 +104,7 @@ export const TransactionEdit = ({
   remove: () => void;
   categories: Category[];
   cat: number;
-  editCategory: (cat: Category, id:number) => void;
+  editCategory: (cat: Category, id: number) => void;
 }) => {
   const [amount, setAmount] = useState<string>(transaction.amount.toString());
   const [category, setCategory] = useState<number>(cat);
@@ -180,7 +180,7 @@ const CategoryDisplay = ({
   category: number;
   setCategory: (cat: number) => void;
   addCategory: () => void;
-  editCategory: (cat: Category, id:number) => void;
+  editCategory: (cat: Category, id: number) => void;
 }) => {
   const [editing, setEditing] = useState(-1);
   const [name, setName] = useState("");
@@ -198,23 +198,46 @@ const CategoryDisplay = ({
               }`}
               onClick={() => setCategory(index)}
               onDoubleClick={() => {
-                setEditing(e => index)
-                setName(el.name)
+                setEditing((e) => index);
+                setName(el.name);
               }}
             >
               {editing === index ? (
-                <input type="text" value={name} onChange={(e) => setName(e.target.value)} className="bg-transparent name_editing" onBlur={() => setEditing(-1)} onClick={(e) => e.preventDefault()} autoFocus/>
-              ) : (<div>{el.name}</div>)}
-              
+                <input
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="bg-transparent name_editing"
+                  onBlur={() => {
+                    editCategory(
+                      {
+                        ...el,
+                        name: name,
+                      },
+                      index
+                    );
+                    setEditing(-1);
+                  }}
+                  onClick={(e) => e.preventDefault()}
+                  autoFocus
+                />
+              ) : (
+                <div>{el.name}</div>
+              )}
+
               <div
                 className={`w-4 h-4 rounded-full`}
                 style={{ backgroundColor: talwindToHex(el.color) }}
-                onDoubleClick={(event) => {
-                  console.log("regen")
-                  editCategory({
-                    ...el,
-                    color: getRandomColor(),
-                  }, index);
+                onClick={(event) => {
+                  console.log("regen");
+                  setEditing(-1);
+                  editCategory(
+                    {
+                      ...el,
+                      color: getRandomColor(),
+                    },
+                    index
+                  );
                 }}
               ></div>
             </div>
