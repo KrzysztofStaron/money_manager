@@ -23,7 +23,7 @@ const App = () => {
 
   return (
     <>
-      <div className="w-screen h-screen flex flex-col gap-3">
+      <div className="w-screen h-screen flex flex-col gap-3 overflow-hidden">
         <div>
           <div className={`w-full text-center font-light text-sm pt-2`}>
             <span className={`${total < 0 && "text-red-400"}`}>

@@ -252,7 +252,7 @@ const TransactionGrop = ({
   }
 
   return (
-    <div>
+    <div className="h-full flex flex-col">
       <div className="flex justify-center w-screen">
         <div className="w-5/7 ml-10">
           {isLoading ? null : <Doughnut data={data} options={options} />}
@@ -265,7 +265,10 @@ const TransactionGrop = ({
         </button>
       </div>
 
-      <div className="mt-4">
+      <div
+        className="mt-4 overflow-scroll overflow-x-hidden"
+        style={{ maxHeight: "50%" }}
+      >
         {transactions && transactions.length > 0
           ? transactions.map((transaction, index) => (
               <TransactionDisplay
