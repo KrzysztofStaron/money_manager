@@ -265,10 +265,7 @@ const TransactionGrop = ({
         </button>
       </div>
 
-      <div
-        className="mt-4 overflow-scroll overflow-x-hidden"
-        style={{ maxHeight: "50%" }}
-      >
+      <div className="mt-4 overflow-x-hidden grow">
         {transactions && transactions.length > 0
           ? transactions.map((transaction, index) => (
               <TransactionDisplay
